@@ -69,6 +69,7 @@ class OwnerControllerTests {
             .param("address", "123 Caramel Street")
             .param("city", "London")
             .param("telephone", "01316761638")
+            .param("nif", "322222222")
         )
             .andExpect(status().is3xxRedirection());
     }
@@ -84,6 +85,7 @@ class OwnerControllerTests {
             .andExpect(model().attributeHasErrors("owner"))
             .andExpect(model().attributeHasFieldErrors("owner", "address"))
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+            .andExpect(model().attributeHasFieldErrors("owner", "nif"))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 
@@ -136,6 +138,7 @@ class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
             .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+            .andExpect(model().attribute("owner", hasProperty("nif", is("322222222"))))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 
@@ -147,6 +150,7 @@ class OwnerControllerTests {
             .param("address", "123 Caramel Street")
             .param("city", "London")
             .param("telephone", "01616291589")
+            .param("nif", "322222222")
         )
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
@@ -163,6 +167,7 @@ class OwnerControllerTests {
             .andExpect(model().attributeHasErrors("owner"))
             .andExpect(model().attributeHasFieldErrors("owner", "address"))
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+            .andExpect(model().attributeHasFieldErrors("owner", "nif"))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
 
@@ -175,6 +180,7 @@ class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
             .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+            .andExpect(model().attribute("owner", hasProperty("nif", is("322222222"))))
             .andExpect(view().name("owners/ownerDetails"));
     }
 

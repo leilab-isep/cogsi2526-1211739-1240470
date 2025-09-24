@@ -15,6 +15,7 @@
             <th scope="col" style="width: 200px;">Address</th>
             <th scope="col">City</th>
             <th scope="col" style="width: 120px">Telephone</th>
+            <th scope="col" style="width: 120px">Nif</th>
             <th scope="col">Pets</th>
         </tr>
         </thead>
@@ -35,6 +36,9 @@
                 </td>
                 <td>
                     <c:out value="${owner.telephone}"/>
+                </td>
+                <td>
+                    <c:out value="${owner.nif}"/>
                 </td>
                 <td>
                     <c:forEach var="pet" items="${owner.pets}">

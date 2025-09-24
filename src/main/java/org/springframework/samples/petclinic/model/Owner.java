@@ -57,6 +57,9 @@ public class Owner extends Person {
     @Digits(fraction = 0, integer = 10)
     private String telephone;
 
+    @Column(name = "nif")
+    private String nif;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<Pet> pets;
 
@@ -84,6 +87,12 @@ public class Owner extends Person {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
+
+    public String getNif() {
+        return nif;
+    }
+
+    public void setNif(String nif) { this.nif = nif;}
 
     protected Set<Pet> getPetsInternal() {
         if (this.pets == null) {
@@ -148,6 +157,7 @@ public class Owner extends Person {
             .append("address", this.address)
             .append("city", this.city)
             .append("telephone", this.telephone)
+            .append("nif", this.nif)
             .toString();
     }
 }
