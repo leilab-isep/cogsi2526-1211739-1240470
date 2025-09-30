@@ -21,12 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlElement;
 
 import org.springframework.beans.support.MutableSortDefinition;
@@ -43,6 +38,8 @@ import org.springframework.beans.support.PropertyComparator;
 @Entity
 @Table(name = "vets")
 public class Vet extends Person {
+    @Column(name = "professional_license_number")
+    private String professionalLicenseNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
@@ -75,4 +72,11 @@ public class Vet extends Person {
         getSpecialtiesInternal().add(specialty);
     }
 
+    public String getProfessionalLicenseNumber() {
+        return professionalLicenseNumber;
+    }
+
+    public void setProfessionalLicenseNumber(String professionalLicenseNumber) {
+        this.professionalLicenseNumber = professionalLicenseNumber;
+    }
 }
