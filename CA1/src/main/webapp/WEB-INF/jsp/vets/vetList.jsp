@@ -13,6 +13,7 @@
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Specialties</th>
+                <th scope="col">Email</th>
             </tr>
             </thead>
             <tbody>
@@ -20,6 +21,9 @@
                 <tr>
                     <td>
                         <c:out value="${vet.firstName} ${vet.lastName}"/>
+                    </td>
+                    <td>
+                        <c:out value="${vet.email}"/>
                     </td>
                     <td>
                         <c:forEach var="specialty" items="${vet.specialties}">

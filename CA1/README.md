@@ -1,5 +1,33 @@
 # CA1 Technical Report
 
+## Part 2: Branches
+
+### 1. Create a branch named email-field
+
+Create a branch to add support for an email field for a vet
+
+``` bash
+git branch email-field
+```
+
+
+
+### 2. Switch to the email-field branch
+Switch to the newly created branch to start working on it.
+
+``` bash
+git checkout email-field
+```
+output:
+``` 
+PS C:\cogsi2526-1211739-1240470\CA1> git branch email-field
+PS C:\cogsi2526-1211739-1240470\CA1> git checkout email-field
+M       CA1/README.md
+Switched to branch 'email-field'
+
+````
+
+
 
 ## GIT  Alternative
 
