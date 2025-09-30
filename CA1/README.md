@@ -27,7 +27,15 @@ Switched to branch 'email-field'
 
 ````
 
+### Commit changes to the email-field branch
 
+```
+PS C:\cogsi2526-1211739-1240470\CA1> git add -A
+PS C:\cogsi2526-1211739-1240470\CA1> git commit -m "Create a branch named emailField" 
+[email-field 13191e7] Create a branch named emailField
+ 12 files changed, 74 insertions(+), 33 deletions(-)
+
+```
 
 ## GIT  Alternative
 
