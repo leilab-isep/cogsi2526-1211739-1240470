@@ -2,7 +2,7 @@
 
 ## Part 2: Branches
 
-### 1. Create a branch named email-field
+###  Create a branch named email-field
 
 Create a branch to add support for an email field for a vet
 
@@ -12,7 +12,7 @@ git branch email-field
 
 
 
-### 2. Switch to the email-field branch
+### Switch to the email-field branch
 Switch to the newly created branch to start working on it.
 
 ``` bash
@@ -74,6 +74,8 @@ PS C:\cogsi2526-1211739-1240470\CA1> git checkout email-field
 Switched to branch 'email-field'
 
 ```
+
+### Branch Tracking
 Connect the local branch to track the remote branch and push changes
 
 ```
@@ -96,6 +98,8 @@ branch 'email-field' set up to track 'origin/email-field'.
 PS C:\COGSI\Projects\cogsi2526-1211739-1240470\CA1> git push                                   
 Everything up-to-date
 ```
+
+### Merge Conflicts
 Create conflicting edits on the two branches so Git reports
 merge conflicts
 ```
@@ -209,6 +213,21 @@ PS C:\cogsi2526-1211739-1240470\CA1> git log --graph
 * commit 8b09859765b2e9556e93827a46d00b12b818bf30 (tag: 1.1.0)
 :
 
+
+```
+
+###  Tagging
+Tag the current version as v1.3.0 and push the tags to the remote repository
+
+```
+PS C:\cogsi2526-1211739-1240470\CA1> git tag -a 1.3.0 -m "Tag v1.3.0"
+PS C:\cogsi2526-1211739-1240470\CA1> git push origin --tags                   
+Enumerating objects: 1, done.
+Counting objects: 100% (1/1), done.
+Writing objects: 100% (1/1), 156 bytes | 78.00 KiB/s, done.
+Total 1 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/leilab-isep/cogsi2526-1211739-1240470.git
+ * [new tag]         1.3.0 -> 1.3.0
 
 ```
 
