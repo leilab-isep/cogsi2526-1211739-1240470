@@ -45,6 +45,8 @@ public class Vet extends Person {
     @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
         inverseJoinColumns = @JoinColumn(name = "specialty_id"))
     private Set<Specialty> specialties;
+    @Column(name = "email")
+    private String email;
 
     protected Set<Specialty> getSpecialtiesInternal() {
         if (this.specialties == null) {
@@ -79,4 +81,12 @@ public class Vet extends Person {
     public void setProfessionalLicenseNumber(String professionalLicenseNumber) {
         this.professionalLicenseNumber = professionalLicenseNumber;
     }
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS vets (
   first_name VARCHAR(30),
   last_name VARCHAR(30),
   professional_license_number VARCHAR(20),
+  email VARCHAR(30),
   CONSTRAINT pk_vets PRIMARY KEY (id)
 );
 

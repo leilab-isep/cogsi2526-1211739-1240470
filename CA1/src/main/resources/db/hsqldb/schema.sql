@@ -11,7 +11,8 @@ CREATE TABLE vets (
   id         INTEGER IDENTITY PRIMARY KEY,
   first_name VARCHAR(30),
   last_name  VARCHAR(30),
-  professional_license_number VARCHAR(20)
+  professional_license_number VARCHAR(20),
+  email VARCHAR(30)
 );
 CREATE INDEX vets_last_name ON vets (last_name);
 
