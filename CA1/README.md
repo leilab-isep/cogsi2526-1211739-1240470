@@ -36,6 +36,7 @@ PS C:\cogsi2526-1211739-1240470\CA1> git commit -m "Create a branch named emailF
  12 files changed, 74 insertions(+), 33 deletions(-)
 
 ```
+Pull changes to generate conflicts
 
 ```
 PS C:\cogsi2526-1211739-1240470\CA1> git checkout main            
@@ -72,6 +73,10 @@ Fast-forward
 PS C:\cogsi2526-1211739-1240470\CA1> git checkout email-field                          
 Switched to branch 'email-field'
 
+```
+Connect the local branch to track the remote branch and push changes
+
+```
 PS C:\cogsi2526-1211739-1240470\CA1>  git push --set-upstream origin email-field
 Enumerating objects: 73, done.
 Counting objects: 100% (73/73), done.
@@ -90,7 +95,10 @@ branch 'email-field' set up to track 'origin/email-field'.
 
 PS C:\COGSI\Projects\cogsi2526-1211739-1240470\CA1> git push                                   
 Everything up-to-date
-
+```
+Create conflicting edits on the two branches so Git reports
+merge conflicts
+```
 PS C:\cogsi2526-1211739-1240470\CA1> git checkout main                          
 Switched to branch 'main'
 Your branch is up to date with 'origin/main'.
@@ -119,7 +127,10 @@ CONFLICT (content): Merge conflict in CA1/src/main/resources/db/postgresql/schem
 Auto-merging CA1/src/main/webapp/WEB-INF/jsp/vets/vetList.jsp
 CONFLICT (content): Merge conflict in CA1/src/main/webapp/WEB-INF/jsp/vets/vetList.jsp
 Automatic merge failed; fix conflicts and then commit the result.
+```
 
+Open the files with conflicts and resolve them.
+```
 PS C:\cogsi2526-1211739-1240470\CA1> notepad "C:\cogsi2526-1211739-1240470\CA1\src\main\resources\db\h2\data.sql"
 
 
@@ -138,6 +149,66 @@ INSERT INTO vets VALUES (default, 'Rafael', 'Ortega','RafaelOrtega@email.com');
 INSERT INTO vets VALUES (default, 'Henry', 'Stevens','HenryStevens@email.com');
 INSERT INTO vets VALUES (default, 'Sharon', 'Jenkins','SharonJenkins@email.com');
 >>>>>>> email-field
+
+```
+
+Resolve all the conflicts and commit the changes
+
+```
+PS C:\COGSI\Projects\cogsi2526-1211739-1240470\CA1> git add -A
+PS C:\cogsi2526-1211739-1240470\CA1> git commit -m "resolving merge conflicts"
+[main 49cf2b0] resolving merge conflicts
+
+PS C:\cogsi2526-1211739-1240470\CA1> git push
+Enumerating objects: 103, done.
+Counting objects: 100% (103/103), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (30/30), done.
+Writing objects: 100% (35/35), 5.61 KiB | 359.00 KiB/s, done.
+Total 35 (delta 19), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (19/19), completed with 19 local objects.
+To https://github.com/leilab-isep/cogsi2526-1211739-1240470.git
+   b8d0b57..49cf2b0  main -> main
+   
+ ```
+
+Log changes:
+``` 
+PS C:\cogsi2526-1211739-1240470\CA1> git log --graph 
+*   commit 49cf2b08e0dd3861af53ae5d4282c9f58e290377 (HEAD -> main, origin/main)
+|\  Merge: b8d0b57 4b2e795
+| | Author: delci <1211739@isep.ipp.pt>
+| | Date:   Wed Oct 1 21:51:53 2025 +0100
+| |
+| |     resolving merge conflicts
+| |
+| * commit 4b2e7952b8d856bebc04680536ed2b77c498df32 (origin/email-field, email-field)
+| | Author: delci <1211739@isep.ipp.pt>
+| | Date:   Tue Sep 30 22:24:42 2025 +0100
+| |
+| |     update readme
+| |
+| * commit 13191e7ac248a13ff13d40df6a480e4b2b6f008e
+| | Author: delci <1211739@isep.ipp.pt>
+| | Date:   Tue Sep 30 22:21:30 2025 +0100
+| |
+| |     Create a branch named emailField
+| |
+* | commit b8d0b57e619ba4005db4d6e15967b1b243c18ca7
+|/  Author: leilaboaze <1240470@isep.ipp.pt>
+|   Date:   Tue Sep 30 21:25:26 2025 +0100
+|
+|       feat: add professional license number to vets
+|
+* commit 0d1b22c6102b8d87251b3d0ff07317358819f5a5
+| Author: delci <1211739@isep.ipp.pt>
+| Date:   Mon Sep 29 20:19:03 2025 +0100
+|
+|     git alternative
+|
+* commit 8b09859765b2e9556e93827a46d00b12b818bf30 (tag: 1.1.0)
+:
+
 
 ```
 
