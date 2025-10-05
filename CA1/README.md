@@ -47,7 +47,7 @@ Finally, we pushed the tags to the remote repository:
 
 ### Log changes
 To view the commit history, we used the `git log --oneline` command, but there are other useful options to visualize the log, such as `--graph` and `--all`.:
-![img.png](img.png)
+![img.png](images/img_16.png)
 
 ### Develop a new feature to add a new field to the application
 In this part, we added the veterinarian’s professional registration number to
@@ -65,7 +65,7 @@ To revert the changes we made a commit with some errors in tests, then we used t
 
 Then, we decided to clear the commit history and return to the state of the repository before the erroneous commit. But we also wanted to keep locally the changes made in that commit.
 To do this, we used the `git reset --soft` command followed by the commit hash before the erroneous commit. This command moves the HEAD pointer to the specified commit and keeps the changes in the working directory and staging area.
-![img_1.png](img_1.png)
+![img_1.png](images/img_13.png)
 
 ### Main Branch Log
 As seen in the image below, the default branch is the main branch, and it contains all the commits we made so far.
