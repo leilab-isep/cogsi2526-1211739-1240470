@@ -4,7 +4,9 @@
 
 ###  Create a branch named email-field
 
-Create a branch to add support for an email field for a vet
+Create a branch to add support for an email field for a vet:
+
+The command git branch is used to list, create, or delete branches in Git
 
 ``` bash
 git branch email-field
@@ -29,6 +31,7 @@ Switched to branch 'email-field'
 
 ### Commit changes to the email-field branch
 
+The command git add -A is used to stage all changes in your working directory for the next commit. This includes new files, modified files, and deleted files. In other words, it ensures that every change in your repository is prepared to be committed. The -A flag stands for “all,” making it a convenient way to include every update at once.
 ```
 PS C:\cogsi2526-1211739-1240470\CA1> git add -A
 PS C:\cogsi2526-1211739-1240470\CA1> git commit -m "Create a branch named emailField" 
@@ -78,6 +81,14 @@ Switched to branch 'email-field'
 ### Branch Tracking
 Connect the local branch to track the remote branch and push changes
 
+ChatGPT said:
+
+The command git push --set-upstream origin email-field is used to push a new local branch to a remote repository for the first time and establish a connection between them.
+In this case, origin refers to the default remote repository, and email-field is the name of the branch you are pushing. 
+
+By using the --set-upstream flag, we tell Git to remember that the local email-field branch should track the remote branch origin/email-field.
+This means that after running this command once, we can simply use git push or git pull in the future without specifying the branch name, as Git will automatically know which remote branch to synchronize with. 
+
 ```
 PS C:\cogsi2526-1211739-1240470\CA1>  git push --set-upstream origin email-field
 Enumerating objects: 73, done.
@@ -98,10 +109,13 @@ branch 'email-field' set up to track 'origin/email-field'.
 PS C:\COGSI\Projects\cogsi2526-1211739-1240470\CA1> git push                                   
 Everything up-to-date
 ```
+This command is commonly used right after creating a new local branch and committing your changes, allowing you to start collaborating or backing up your work on the remote repository.
 
 ### Merge Conflicts
 Create conflicting edits on the two branches so Git reports
 merge conflicts
+
+The command git merge is used to combine the changes from the branch email-field into the main branch.
 ```
 PS C:\cogsi2526-1211739-1240470\CA1> git checkout main                          
 Switched to branch 'main'
@@ -132,6 +146,9 @@ Auto-merging CA1/src/main/webapp/WEB-INF/jsp/vets/vetList.jsp
 CONFLICT (content): Merge conflict in CA1/src/main/webapp/WEB-INF/jsp/vets/vetList.jsp
 Automatic merge failed; fix conflicts and then commit the result.
 ```
+Git will apply all the commits from email-field to the main branch, creating a new merge commit if necessary.
+If there are no conflicting changes, the merge completes automatically. 
+However, if both branches modified the same lines of code, Git will report a merge conflict, and you’ll need to manually resolve those conflicts before completing the merge.
 
 Open the files with conflicts and resolve them.
 ```
