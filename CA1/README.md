@@ -1,5 +1,78 @@
 # CA1 Technical Report
 
+Students:
+- Student 1: Délcio Monjane, 1211739
+- Student 2: Leila Boaze, 1240470
+
+## Part 1: Git Version Control
+In the first part of this assignment, we set up the Spring Petclinic application in our repository and learned how to work with commits and tags in Git. We used only the main branch without creating any additional branches.
+
+### Change to the project directory
+First we created a directory named CA1 and copied the Spring Petclinic project into it. Then we changed to the project directory:
+``` bash
+mkdir CA1;
+```
+
+Then, we copied all the **Spring Petclinic** project codebase that was cloned and altered in CA0 into this folder.
+The only thing we did not copy was the .git folder, since it contains all the version control information of the project.
+The structure of the project now looks like this:
+
+```
+📁 spring-petclinic/
+ ├── 📁 CA1/
+ │    ├── pom.xml
+ │    ├── src/
+ │    ├── README.md
+ │    └── ...
+ ├── .git/
+ ├── src/
+ ├── README.md
+ └── ...
+```
+
+### Commit the changes, tag the version, and push to GitHub
+Now that we have the project in place, we need to track and push it to GitHub:
+``` bash
+git add .
+git commit -m "Initial petclinic commit"
+git push origin main
+```
+After committing the changes, we tagged the current version as 1.1.0 and pushed the tags to the remote repository:
+![img.png](images/img.png)
+Note: The git tag command opens a text editor to enter the tag message. We wrote "Initial version" saved and closed the editor to complete the tagging process.
+
+Finally, we pushed the tags to the remote repository:
+
+![image_1.jpeg](images/image_1.jpeg)
+
+### Log changes
+To view the commit history, we used the `git log --oneline` command, but there are other useful options to visualize the log, such as `--graph` and `--all`.:
+![img.png](img.png)
+
+### Develop a new feature to add a new field to the application
+In this part, we added the veterinarian’s professional registration number to
+the Vet class (`professionalLicenseNumber`). See the image below for reference:
+
+![img_6.png](images/img_6.png)
+
+Then again, after making the changes, we committed and pushed them to the remote repository.
+Then, we tagged the current version as 1.2.0 and also pushed the tags to the remote repository.
+![img_7.png](images/img_7.png)
+
+### Revert changes to a specific commit
+To revert the changes we made a commit with some errors in tests, then we used the `git revert` command followed by the commit hash. This command creates a new commit that undoes the changes introduced by the specified commit.
+![img_8.png](images/img_8.png)
+
+Then, we decided to clear the commit history and return to the state of the repository before the erroneous commit. But we also wanted to keep locally the changes made in that commit.
+To do this, we used the `git reset --soft` command followed by the commit hash before the erroneous commit. This command moves the HEAD pointer to the specified commit and keeps the changes in the working directory and staging area.
+![img_1.png](img_1.png)
+
+### Main Branch Log
+As seen in the image below, the default branch is the main branch, and it contains all the commits we made so far.
+![img_11.png](images/img_11.png)
+Bellow is the log of the main branch after reverting and resetting the commits:
+
+
 ## Part 2: Branches
 
 ###  Create a branch named email-field
@@ -11,7 +84,6 @@ The command git branch is used to list, create, or delete branches in Git
 ``` bash
 git branch email-field
 ```
-
 
 
 ### Switch to the email-field branch
@@ -341,8 +413,4 @@ hg pull
 ### Conclusion
 Mercurial is a powerful and flexible version control system that offers many features similar to Git.
 
-
-Students:
-- Student 1: Délcio Monjane, 1211739
-- Student 2: Leila Boaze, 1240470
 
