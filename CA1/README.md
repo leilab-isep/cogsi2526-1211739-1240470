@@ -71,7 +71,400 @@ To do this, we used the `git reset --soft` command followed by the commit hash b
 As seen in the image below, the default branch is the main branch, and it contains all the commits we made so far.
 ![img_11.png](images/img_11.png)
 Bellow is the log of the main branch after reverting and resetting the commits:
+```bash
+commit 451aec38cfb9658752df7509709e0e4da177061d
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Oct 5 22:31:36 2025 +0100
 
+    part1 report
+
+commit eddcca7c8cd4eb9a88820e094bffeacf563bcd1f
+Merge: b509393 18f1358
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Oct 5 22:12:49 2025 +0100
+
+    WIP on main: b509393 vet professional number in tests
+
+commit 18f1358039bc7b1e188ee392cee87010838acbd0
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Oct 5 22:12:49 2025 +0100
+
+    index on main: b509393 vet professional number in tests
+
+commit b5093932527f8470f5874675b1c54cb37bc08f2c
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Oct 5 22:10:56 2025 +0100
+
+    vet professional number in tests
+
+commit 74e8124fc7321045018aa19dc3f8cfbc07c6dfec
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Oct 5 22:10:09 2025 +0100
+
+    report images
+
+commit 18b394a80b05a6ebd844779e53a6092b8bdbfc5d
+Author: delci <1211739@isep.ipp.pt>
+Date:   Sun Oct 5 21:30:00 2025 +0100
+
+    explain more
+
+commit a0e70c2c1b0eb27e418aa9917570b4e675f79e0c
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Wed Oct 1 22:39:23 2025 +0100
+
+    feat: readme images
+
+commit 56345b00b9e9bc5a48e9c801fbb683e2eab3c8ad
+Author: delci <1211739@isep.ipp.pt>
+Date:   Wed Oct 1 22:34:59 2025 +0100
+
+    update readme
+
+commit a62e0dc30402fb42aca58ca50a191b34c44e91d2
+Author: delci <1211739@isep.ipp.pt>
+Date:   Wed Oct 1 22:10:24 2025 +0100
+
+    update readme part 2
+
+commit 49cf2b08e0dd3861af53ae5d4282c9f58e290377
+Merge: b8d0b57 4b2e795
+Author: delci <1211739@isep.ipp.pt>
+Date:   Wed Oct 1 21:51:53 2025 +0100
+
+    resolving merge conflicts
+
+commit d19d34370fe1437622905ba3c0534494f69d1977
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Oct 1 09:34:40 2025 +0000
+
+    build(deps): bump com.github.ben-manes.caffeine:caffeine
+    
+    Bumps [com.github.ben-manes.caffeine:caffeine](https://github.com/ben-manes/caffeine) from 3.2.0 to 3.2.2.
+    - [Release notes](https://github.com/ben-manes/caffeine/releases)
+    - [Commits](https://github.com/ben-manes/caffeine/compare/v3.2.0...v3.2.2)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: com.github.ben-manes.caffeine:caffeine
+      dependency-version: 3.2.2
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 6bf724f0e2d01c6b90e835aee14412e3668f862b
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Oct 1 09:34:34 2025 +0000
+
+    build(deps-dev): bump org.assertj:assertj-core from 3.27.3 to 3.27.6
+    
+    Bumps [org.assertj:assertj-core](https://github.com/assertj/assertj) from 3.27.3 to 3.27.6.
+    - [Release notes](https://github.com/assertj/assertj/releases)
+    - [Commits](https://github.com/assertj/assertj/compare/assertj-build-3.27.3...assertj-build-3.27.6)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.assertj:assertj-core
+      dependency-version: 3.27.6
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 14b698cb110b9e3436d53e370cb54bd882e83df1
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Oct 1 09:34:28 2025 +0000
+
+    build(deps): bump mockito.version from 5.17.0 to 5.20.0
+    
+    Bumps `mockito.version` from 5.17.0 to 5.20.0.
+    
+    Updates `org.mockito:mockito-core` from 5.17.0 to 5.20.0
+    - [Release notes](https://github.com/mockito/mockito/releases)
+    - [Commits](https://github.com/mockito/mockito/compare/v5.17.0...v5.20.0)
+    
+    Updates `org.mockito:mockito-junit-jupiter` from 5.17.0 to 5.20.0
+    - [Release notes](https://github.com/mockito/mockito/releases)
+    - [Commits](https://github.com/mockito/mockito/compare/v5.17.0...v5.20.0)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.mockito:mockito-core
+      dependency-version: 5.20.0
+      dependency-type: direct:development
+      update-type: version-update:semver-minor
+    - dependency-name: org.mockito:mockito-junit-jupiter
+      dependency-version: 5.20.0
+      dependency-type: direct:production
+      update-type: version-update:semver-minor
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit ffc4b361a33d9641bc781759ff9e88698789a9c4
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Oct 1 09:34:17 2025 +0000
+
+    build(deps): bump com.fasterxml.jackson:jackson-bom
+    
+    Bumps [com.fasterxml.jackson:jackson-bom](https://github.com/FasterXML/jackson-bom) from 2.19.2 to 2.20.0.
+    - [Commits](https://github.com/FasterXML/jackson-bom/compare/jackson-bom-2.19.2...jackson-bom-2.20.0)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: com.fasterxml.jackson:jackson-bom
+      dependency-version: 2.20.0
+      dependency-type: direct:production
+      update-type: version-update:semver-minor
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 6d0e88a45b6ae64bcb2dcf58542c58762c148464
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Oct 1 09:34:12 2025 +0000
+
+    build(deps): bump spring-framework.version from 6.2.10 to 6.2.11
+    
+    Bumps `spring-framework.version` from 6.2.10 to 6.2.11.
+    
+    Updates `org.springframework:spring-jdbc` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    Updates `org.springframework:spring-orm` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    Updates `org.springframework:spring-webmvc` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    Updates `org.springframework:spring-context-support` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    Updates `org.springframework:spring-oxm` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    Updates `org.springframework:spring-test` from 6.2.10 to 6.2.11
+    - [Release notes](https://github.com/spring-projects/spring-framework/releases)
+    - [Commits](https://github.com/spring-projects/spring-framework/compare/v6.2.10...v6.2.11)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.springframework:spring-jdbc
+      dependency-version: 6.2.11
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    - dependency-name: org.springframework:spring-orm
+      dependency-version: 6.2.11
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    - dependency-name: org.springframework:spring-webmvc
+      dependency-version: 6.2.11
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    - dependency-name: org.springframework:spring-context-support
+      dependency-version: 6.2.11
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    - dependency-name: org.springframework:spring-oxm
+      dependency-version: 6.2.11
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    - dependency-name: org.springframework:spring-test
+      dependency-version: 6.2.11
+      dependency-type: direct:development
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 4b2e7952b8d856bebc04680536ed2b77c498df32
+Author: delci <1211739@isep.ipp.pt>
+Date:   Tue Sep 30 22:24:42 2025 +0100
+
+    update readme
+
+commit 13191e7ac248a13ff13d40df6a480e4b2b6f008e
+Author: delci <1211739@isep.ipp.pt>
+Date:   Tue Sep 30 22:21:30 2025 +0100
+
+    Create a branch named emailField
+
+commit b8d0b57e619ba4005db4d6e15967b1b243c18ca7
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Tue Sep 30 21:25:26 2025 +0100
+
+    feat: add professional license number to vets
+
+commit 0d1b22c6102b8d87251b3d0ff07317358819f5a5
+Author: delci <1211739@isep.ipp.pt>
+Date:   Mon Sep 29 20:19:03 2025 +0100
+
+    git alternative
+
+commit 8b09859765b2e9556e93827a46d00b12b818bf30
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Sep 28 23:20:26 2025 +0100
+
+    add CA1 technical report README.md
+
+commit e52d7712450e715e9ede86cf6c0344ef61c5d113
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Sep 28 23:15:41 2025 +0100
+
+    initialize CA1 directory
+
+commit a2b0cc30f0ee4aa6d0ab5b48b6896cf3c61975f0
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Sun Sep 28 22:02:05 2025 +0100
+
+    add support for nif
+
+commit a33e0a4be9550d022f793c905ee106127c658a85
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Wed Sep 24 23:02:34 2025 +0100
+
+    feat: adding nif
+
+commit d81c5ea7c0c5c95419cfaa9ba741c1a8646977a2
+Author: delci <1211739@isep.ipp.pt>
+Date:   Wed Sep 24 22:54:48 2025 +0100
+
+    Add mercurial to git ignore
+
+commit 60044292a8b4863d02a4d902d849f2ce5a2bad33
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Sep 24 21:27:17 2025 +0000
+
+    build(deps): bump hibernate.version from 6.6.4.Final to 7.1.1.Final
+    
+    Bumps `hibernate.version` from 6.6.4.Final to 7.1.1.Final.
+    
+    Updates `org.hibernate.orm:hibernate-core` from 6.6.4.Final to 7.1.1.Final
+    - [Release notes](https://github.com/hibernate/hibernate-orm/releases)
+    - [Changelog](https://github.com/hibernate/hibernate-orm/blob/7.1.1/changelog.txt)
+    - [Commits](https://github.com/hibernate/hibernate-orm/compare/6.6.4...7.1.1)
+    
+    Updates `org.hibernate.orm:hibernate-jcache` from 6.6.4.Final to 7.1.1.Final
+    - [Release notes](https://github.com/hibernate/hibernate-orm/releases)
+    - [Changelog](https://github.com/hibernate/hibernate-orm/blob/7.1.1/changelog.txt)
+    - [Commits](https://github.com/hibernate/hibernate-orm/compare/6.6.4...7.1.1)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.hibernate.orm:hibernate-core
+      dependency-version: 7.1.1.Final
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    - dependency-name: org.hibernate.orm:hibernate-jcache
+      dependency-version: 7.1.1.Final
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 0d9b9c1ac70ee8af106af76446090b1cf0a1ab73
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Sep 24 21:27:05 2025 +0000
+
+    build(deps): bump jakarta.activation:jakarta.activation-api
+    
+    Bumps [jakarta.activation:jakarta.activation-api](https://github.com/jakartaee/jaf-api) from 2.1.3 to 2.1.4.
+    - [Release notes](https://github.com/jakartaee/jaf-api/releases)
+    - [Commits](https://github.com/jakartaee/jaf-api/compare/2.1.3...2.1.4)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: jakarta.activation:jakarta.activation-api
+      dependency-version: 2.1.4
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit 13bd3b470074f28ed2591d143afbfba3aa7aeebd
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Sep 24 21:27:01 2025 +0000
+
+    build(deps): bump org.hibernate.validator:hibernate-validator
+    
+    Bumps [org.hibernate.validator:hibernate-validator](https://github.com/hibernate/hibernate-validator) from 8.0.2.Final to 9.0.1.Final.
+    - [Changelog](https://github.com/hibernate/hibernate-validator/blob/9.0.1.Final/changelog.txt)
+    - [Commits](https://github.com/hibernate/hibernate-validator/compare/8.0.2.Final...9.0.1.Final)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.hibernate.validator:hibernate-validator
+      dependency-version: 9.0.1.Final
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit f38e263c3ea2660ff7aad9491bf11949f3352a6e
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Sep 24 21:26:55 2025 +0000
+
+    build(deps): bump org.postgresql:postgresql from 42.7.7 to 42.7.8
+    
+    Bumps [org.postgresql:postgresql](https://github.com/pgjdbc/pgjdbc) from 42.7.7 to 42.7.8.
+    - [Release notes](https://github.com/pgjdbc/pgjdbc/releases)
+    - [Changelog](https://github.com/pgjdbc/pgjdbc/blob/master/CHANGELOG.md)
+    - [Commits](https://github.com/pgjdbc/pgjdbc/compare/REL42.7.7...REL42.7.8)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.postgresql:postgresql
+      dependency-version: 42.7.8
+      dependency-type: direct:production
+      update-type: version-update:semver-patch
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit b87795275500478e7cace5bad7d179833b5e0bdf
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Wed Sep 24 21:26:49 2025 +0000
+
+    build(deps): bump tomcat.version from 10.1.35 to 11.0.11
+    
+    Bumps `tomcat.version` from 10.1.35 to 11.0.11.
+    
+    Updates `org.apache.tomcat:tomcat-jasper-el` from 10.1.35 to 11.0.11
+    
+    Updates `org.apache.tomcat:tomcat-jdbc` from 10.1.35 to 11.0.11
+    
+    ---
+    updated-dependencies:
+    - dependency-name: org.apache.tomcat:tomcat-jasper-el
+      dependency-version: 11.0.11
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    - dependency-name: org.apache.tomcat:tomcat-jdbc
+      dependency-version: 11.0.11
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+commit c930134230f11127e5046ebb0588d72870bd0eb1
+Author: leilaboaze <1240470@isep.ipp.pt>
+Date:   Wed Sep 24 22:25:09 2025 +0100
+
+    feat: initial petclinic commit
+
+```
 
 ## Part 2: Branches
 
