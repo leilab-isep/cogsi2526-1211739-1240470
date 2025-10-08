@@ -19,3 +19,6 @@ target/
 
 # Mercurial
 .hg/
+
+CA2/build/*
+CA2/.gradle/*
