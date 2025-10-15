@@ -41,7 +41,6 @@ jar {
 }
 
 
-
 task runClient(type:JavaExec, dependsOn: classes){
     group = "DevOps"
     description = "Launches a chat client that connects to a server on localhost:59001 "
@@ -52,6 +51,7 @@ task runClient(type:JavaExec, dependsOn: classes){
 
     args 'localhost', '59001'
 }
+
 task runServer(type:JavaExec, dependsOn: classes){
     group = "DevOps"
     description = "Launches a chat server that connects to a server on localhost:59001 "
@@ -68,7 +68,20 @@ task backupSources(type: Copy) {
     description = "Copies the contents of src to backup folder"
     from 'src'
     into 'backup'
+}
+
 test {
     useJUnitPlatform()
     systemProperty 'java.awt.headless', 'false'
 }
+
+task zipBackup(type: Zip, dependsOn: backupSources) {
+    group = 'Backup'
+    description = 'Creates a timestamped ZIP archive of the backup folder'
+
+    from 'backup'
+    archiveFileName = "backup.zip"
+    destinationDirectory = file("/archives")
+
+}
+

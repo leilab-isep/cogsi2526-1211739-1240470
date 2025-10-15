@@ -22,3 +22,6 @@ target/
 
 CA2/build/*
 CA2/.gradle/*
+
+archives/
+backup/
