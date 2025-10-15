@@ -62,3 +62,10 @@ task runServer(type:JavaExec, dependsOn: classes){
 
     args 'localhost', '59001'
 }
+
+task backupSources(type: Copy) {
+    group = "Backup"
+    description = "Copies the contents of src to backup folder"
+    from 'src'
+    into 'backup'
+}
