@@ -224,6 +224,61 @@ The system has several Amazon Corretto JDK versions installed:
 Since the project specifies JDK **17** in the toolchain configuration, Gradle will select that version automatically when compiling and running the application.
 This ensures that the build always uses the expected Java version, even if other versions (like 21) are available.
 
+## Part 2: Convert a Spring Boot application to Gradle (instead of Maven)
+In this part, we converted a simple Spring Boot application from Maven to Gradle.
+The application is a Payroll System and can be found in the directory `CA2_Part2` in the root of this repository.
+We converted the `pom.xml` file to a `build.gradle` file and ensured that all dependencies and plugins were correctly translated.
+
+To run the Spring Boot application using Gradle, we used the following command:
+
+```bash
+./gradlew bootRun
+```
+This command starts the Spring Boot application, allowing us to verify that the conversion from Maven to Gradle was successful and that the application runs as expected.
+![img_6.png](images/img_6.png)
+
+The application is now accessible at `http://localhost:8080` and this is the output of the GET /employees endpoint:
+![img_8.png](images/img_8.png)
+
+### Create a custom task named deployToDev
+
+We created a custom Gradle task called **`deployToDev`** that automates the process of preparing a development deployment package. It executes several steps in sequence:
+
+1. **Clean Deployment Directory**
+
+    * A `Delete` task (`cleanDeployment`) removes the existing `build/deployment/dev` directory to ensure a fresh start for each deployment.
+
+2. **Copy Main Application Artifact**
+
+    * A `Copy` task (`copyAppJar`) depends on `bootJar` and moves the generated application JAR file into the `deployment` directory.
+
+3. **Copy Runtime Dependencies**
+
+    * Another `Copy` task (`copyRuntimeDeps`) gathers only the runtime dependencies (JARs required to run the app) from `configurations.runtimeClasspath` and places them into `build/deployment/dev/lib`.
+
+4. **Copy and Filter Configuration Files**
+
+    * A final `Copy` task (`copyConfig`) copies `.properties` files from `src/main/resources` into the deployment directory.
+    * It uses the built-in `ReplaceTokens` filter to dynamically inject properties such as the **project version** and the **current build timestamp** into the configuration files.
+
+The **`deployToDev`** task depends on these steps in order, ensuring a clean, structured, and versioned deployment layout ready for development testing.
+
+To run the `deployToDev` task, we executed the following command from the terminal:
+
+```bash
+./gradlew deployToDev
+```
+And the resulting structure is:
+![img_9.png](images/img_9.png)
+The content of the lib folder is:
+![img_10.png](images/img_10.png)
+
+
+### Create a custom task that depends on the installDist task
+
+Then we created a custom task named `runDist` that depends on the `installDist` task.
+
+
 ###  Create a custom task that depends on the javadoc task
 It should generate the Javadoc for your project, and then package the
 generated documentation into a zip file.
@@ -255,7 +310,7 @@ task javadocZip(type: Zip) {
 ```
 
 
-### Alternatives
+## Alternative Solution: Using Bazel as a Build Tool
 
 ### Bazel
 Bazel is a free and open-source software tool used for the automation of building and testing software.

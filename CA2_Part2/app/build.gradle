@@ -54,3 +54,59 @@ tasks.named('test') {
 application {
     mainClass = 'payroll.PayrollApplication'
 }
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+def deploymentDir = "$buildDir/deployment/dev"
+def libDir = "$deploymentDir/lib"
+def buildTimestamp = new Date().format("yyyy-MM-dd_HH-mm-ss")
+
+// Use the built-in Delete task type to clean out a specific, versioncontrolled “deployment” directory (e.g., build/deployment/dev)
+task cleanDeployment(type: Delete) {
+    delete deploymentDir
+}
+
+//Use the built-in Copy task type to move the main application artifact into the deployment directory
+task copyAppJar(type: Copy) {
+    dependsOn cleanDeployment, bootJar
+    from("$buildDir/libs/${bootJar.archiveFileName.get()}")
+    into deploymentDir
+}
+
+//  Use another Copy task to place a subset of external dependencies (e.g., only the JARs required at runtime) into a subfolder of the deployment directory (e.g., build/deployment/dev/lib)
+task copyRuntimeDeps(type: Copy) {
+    dependsOn copyAppJar
+    from configurations.runtimeClasspath
+    into libDir
+    include '*.jar'
+}
+
+// Use a final Copy task to move configuration files (e.g., src/main/resources/*.properties) to the deployment directory, using a built-in filter like ReplaceTokens to inject a property, such as the current build timestamp or project version
+task copyConfig(type: Copy) {
+    dependsOn copyRuntimeDeps
+    from('src/main/resources') {
+        include '*.properties'
+        filter(ReplaceTokens, tokens: [
+                'version': project.version,
+                'timestamp': buildTimestamp
+        ])
+    }
+    into deploymentDir
+}
+
+task deployToDev {
+    dependsOn copyConfig
+    group = 'deployment'
+    description = 'Deploys the app and runtime dependencies to the dev deployment directory'
+}
+
+task runDist(type: Exec) {
+    dependsOn installDist
+    def appName = application.applicationName
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def script = isWindows ? "${appName}.bat" : appName
+    def scriptPath = "$buildDir/install/$appName/bin/$script"
+    commandLine isWindows ? ['cmd', '/c', scriptPath] : [scriptPath]
+    group = 'application'
+    description = 'Runs the app using the generated distribution script'
+}
