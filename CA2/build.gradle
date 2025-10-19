@@ -85,3 +85,16 @@ task zipBackup(type: Zip, dependsOn: backupSources) {
 
 }
 
+task javadocZip(type: Zip) {
+    group = 'Documentation'
+    description = 'Generates Javadoc and packages it into a ZIP file.'
+
+    dependsOn javadoc
+
+    from javadoc.destinationDir
+    archiveBaseName = 'project-javadoc'
+    archiveVersion = version
+    destinationDirectory = file("/distributions")
+}
+
+

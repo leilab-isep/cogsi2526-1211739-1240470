@@ -137,6 +137,8 @@ And as shown in the image below, the contents of the `src` folder were successfu
 
 
 ### Task of type Zip to be used to make an archive 
+We use the key word `dependsOn` to make the `zipBackup` task depend on the `backupSources` task, ensuring that the backup is created before the ZIP archive is generated.
+And task type Zip was added to the `build.gradle` file as follows:
 
 ````groovy
 
@@ -221,3 +223,234 @@ The system has several Amazon Corretto JDK versions installed:
 
 Since the project specifies JDK **17** in the toolchain configuration, Gradle will select that version automatically when compiling and running the application.
 This ensures that the build always uses the expected Java version, even if other versions (like 21) are available.
+
+###  Create a custom task that depends on the javadoc task
+It should generate the Javadoc for your project, and then package the
+generated documentation into a zip file.
+
+`dependsOn javadoc` → ensures Javadoc is built before zipping.
+
+` from javadoc.destinationDir `→ uses the output folder from the existing Javadoc task (build/docs/javadoc).
+
+` archiveBaseName `→ sets the ZIP filename prefix.
+
+`archiveVersion` → appends the project version.
+
+`destinationDirectory` → defines where the ZIP is saved (/distributions).
+
+```groovy
+
+task javadocZip(type: Zip) {
+    group = 'Documentation'
+    description = 'Generates Javadoc and packages it into a ZIP file.'
+
+    dependsOn javadoc
+
+    from javadoc.destinationDir
+    archiveBaseName = 'project-javadoc'
+    archiveVersion = version
+    destinationDirectory = file("/distributions")
+}
+
+```
+
+
+### Alternatives
+
+### Bazel
+Bazel is a free and open-source software tool used for the automation of building and testing software.
+
+Developed by Google, is a modern and powerful alternative to Gradle. 
+It supports multi-language builds (including Java, C++, and Python) and focuses on speed, reproducibility, and scalability.
+
+Bazel uses a declarative build language called Starlark and emphasizes incremental builds, meaning it only rebuilds what’s necessary (syntax like python).
+This makes it ideal for large codebases and monorepos where performance and consistency are critical. 
+It also integrates well with continuous integration (CI) pipelines.
+
+While Bazel is highly efficient and scalable, it has a steeper learning curve compared to Gradle and may require more initial setup.
+
+Example of a simple Bazel build file (BUILD.bazel):
+
+```
+
+java_binary(
+    name = "myapp",
+    srcs = ["Main.java"],
+    main_class = "com.example.Main",
+    deps = [
+        "//libs:guava",
+    ],
+)
+
+
+```
+
+## Our gradle build in Bazel implementation
+
+We’ll use Bazel’s Java rules (java_binary, java_library, java_test) and repository dependencies to replicate what the Gradle script does.
+
+### Project Structure
+Bazel organizes builds around WORKSPACE and BUILD files.
+
+So we create a WORKSPACE file at the root of the project and define the rest of the project files with the same convention as Gradle.
+
+``` 
+
+project-root/
+├── WORKSPACE
+├── BUILD
+├── src/
+│   ├── main/java/basic_demo/
+│   │   ├── App.java
+│   │   ├── ChatClientApp.java
+│   │   └── ChatServerApp.java
+│   └── test/java/basic_demo/
+│       └── AppTest.java
+└── backup/        (created by Gradle previously — not needed in Bazel)
+
+
+```
+
+### WORKSPACE file
+
+This file defines external dependencies — similar to repositories {} and dependencies {} in Gradle.
+
+```bzl
+
+workspace(name = "basic_demo")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = "d47b93f5b9a50e6f3b5ea6a662b9a6b859afce91af1f3d31e23c8af3a2b2d9d8",
+    strip_prefix = "rules_jvm_external-5.3",
+    urls = ["https://github.com/bazelbuild/rules_jvm_external/archive/refs/tags/5.3.zip"],
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+maven_install(
+    name = "maven",
+    artifacts = [
+        "org.apache.logging.log4j:log4j-api:2.11.2",
+        "org.apache.logging.log4j:log4j-core:2.11.2",
+        "org.junit.jupiter:junit-jupiter:5.7.0",
+    ],
+    repositories = [
+        "https://repo.maven.apache.org/maven2",
+    ],
+)
+
+````
+
+Bazel doesn’t use mavenCentral() directly. We import rules_jvm_external, which lets us pull Maven dependencies via maven_install().
+This replaces Gradle’s repositories and dependencies.
+
+### BUILD file
+
+This file defines how to compile, package, and run your code — similar to tasks in Gradle.
+
+```bzl
+
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+# Java library for shared code
+java_library(
+    name = "app_lib",
+    srcs = glob(["src/main/java/basic_demo/**/*.java"]),
+    deps = [
+        artifact("org.apache.logging.log4j:log4j-api"),
+        artifact("org.apache.logging.log4j:log4j-core"),
+    ],
+)
+
+# Main application
+java_binary(
+    name = "app",
+    main_class = "basic_demo.App",
+    runtime_deps = [":app_lib"],
+)
+
+# Chat Client
+java_binary(
+    name = "chat_client",
+    main_class = "basic_demo.ChatClientApp",
+    runtime_deps = [":app_lib"],
+    args = ["localhost", "59001"],
+)
+
+# Chat Server
+java_binary(
+    name = "chat_server",
+    main_class = "basic_demo.ChatServerApp",
+    runtime_deps = [":app_lib"],
+    args = ["localhost", "59001"],
+)
+
+# JUnit test target
+java_test(
+    name = "app_test",
+    srcs = glob(["src/test/java/**/*.java"]),
+    deps = [
+        ":app_lib",
+        artifact("org.junit.jupiter:junit-jupiter"),
+    ],
+)
+
+
+```
+
+This BUILD file defines:
+* A `java_library` target for shared code (like Gradle’s sourceSets).
+* `java_binary` targets for the main app, chat client, and chat server (like Gradle’s application plugin tasks).
+* A `java_test` target for unit tests (like Gradle’s test task).
+* Dependencies are pulled in using artifact() from the maven_install() in the WORKSPACE file.
+* Arguments for the chat client and server are specified in the args attribute.
+
+
+| Task       | Gradle Command     | Bazel Command              |
+| ---------- | ------------------ | -------------------------- |
+| Compile    | `gradle build`     | `bazel build //:app`       |
+| Run App    | `gradle run`       | `bazel run //:app`         |
+| Run Server | `gradle runServer` | `bazel run //:chat_server` |
+| Run Client | `gradle runClient` | `bazel run //:chat_client` |
+| Test       | `gradle test`      | `bazel test //:app_test`   |
+
+Bazel doesn’t use Gradle-style custom tasks.
+Instead it uses genrule() for file operations (like backup or zip) and java_doc() rule from community extensions for Javadoc
+
+```bzl
+
+genrule(
+name = "backup_sources",
+srcs = glob(["src/**"]),
+outs = ["backup.zip"],
+cmd = "zip -r $@ $(SRCS)",
+)
+
+genrule(
+    name = "generate_javadoc",
+    srcs = glob(["src/main/java/**/*.java"]),
+    outs = ["javadoc.zip"],
+    cmd = """
+        mkdir -p $(@D)/javadoc && \
+        javadoc -d $(@D)/javadoc -sourcepath src/main/java $(SRCS) && \
+        cd $(@D) && \
+        zip -r javadoc.zip javadoc
+    """,
+    tools = [],
+    local = True,
+    message = "Generating and packaging Javadoc...",
+)
+
+```
+
+This creates two genrule() targets:
+* `backup_sources` zips the src folder into backup.zip.
+* `generate_javadoc` generates Javadoc and packages it into javadoc.zip.
+
+### Summary
+By defining a WORKSPACE file for dependencies and a BUILD file for build targets, we replicated the Gradle build using Bazel.
+Bazel’s declarative approach and focus on performance make it a strong alternative for large, complex projects needing reproducible builds.
+
