@@ -1,4 +1,4 @@
-package payroll;
+package main.java.payroll;
 
 enum Status {
 
