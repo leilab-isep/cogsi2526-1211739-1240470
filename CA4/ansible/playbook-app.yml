@@ -1,0 +1,45 @@
+- name: Deploy Spring Boot App
+  hosts: app
+  become: yes
+
+  tasks:
+    - name: Install Java and Git
+      apt:
+        name:
+          - openjdk-17-jdk
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Clone application repository
+      git:
+        repo: https://github.com/spring-guides/gs-rest-service.git
+        dest: /opt/app
+      register: git_result
+      retries: 3
+      until: git_result.after is defined
+
+    - name: Update application.properties to connect to remote H2
+      lineinfile:
+        path: /opt/app/complete/src/main/resources/application.properties
+        regexp: '^spring.datasource.url='
+        line: 'spring.datasource.url=jdbc:h2:tcp://192.168.56.11:9092/~/testdb'
+      notify: Restart App
+
+    - name: Build and run application
+      shell: |
+        ./gradlew bootRun &
+      args:
+        chdir: /opt/app/complete
+      async: 30
+      poll: 0
+
+  handlers:
+    - name: Restart App
+      shell: |
+        pkill -f 'gradlew bootRun' || true
+        ./gradlew bootRun &
+      args:
+        chdir: /opt/app/complete
+      async: 30
+      poll: 0
