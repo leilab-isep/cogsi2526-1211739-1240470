@@ -13,15 +13,17 @@
 
     - name: Clone application repository
       git:
-        repo: https://github.com/spring-guides/gs-rest-service.git
-        dest: /opt/app
+        repo: https://github.com/leilab-isep/cogsi2526-1211739-1240470.git
+        dest: /dev/app
+        version: main
+        force: yes
       register: git_result
       retries: 3
       until: git_result.after is defined
 
     - name: Update application.properties to connect to remote H2
       lineinfile:
-        path: /opt/app/complete/src/main/resources/application.properties
+        path: /dev/app/CA2_Part2/app/src/resources/application.properties
         regexp: '^spring.datasource.url='
         line: 'spring.datasource.url=jdbc:h2:tcp://192.168.56.11:9092/~/testdb'
       notify: Restart App
@@ -30,7 +32,7 @@
       shell: |
         ./gradlew bootRun &
       args:
-        chdir: /opt/app/complete
+        chdir: /dev/app/CA2_Part2
       async: 30
       poll: 0
 
@@ -40,6 +42,6 @@
         pkill -f 'gradlew bootRun' || true
         ./gradlew bootRun &
       args:
-        chdir: /opt/app/complete
+        chdir: /dev/app/CA2_Part2
       async: 30
       poll: 0
