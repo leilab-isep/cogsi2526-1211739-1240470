@@ -1,0 +1,40 @@
+- name: Setup H2 Database Server
+  hosts: db
+  become: yes
+
+  tasks:
+    - name: Install Java (required by H2)
+      apt:
+        name: openjdk-11-jdk
+        state: present
+      retries: 3
+      until: result is succeeded
+      register: result
+
+    - name: Create H2 directory
+      file:
+        path: /opt/h2
+        state: directory
+        mode: '0755'
+
+    - name: Download H2 database
+      get_url:
+        url: https://h2database.com/h2-2022-12-16.zip
+        dest: /tmp/h2.zip
+      register: download_result
+      failed_when: download_result.status is not defined and download_result.failed is defined
+
+    - name: Unzip H2
+      unarchive:
+        src: /tmp/h2.zip
+        dest: /opt/h2
+        remote_src: yes
+
+    - name: Start H2 in server mode
+      shell: |
+        nohup java -cp /opt/h2/bin/h2*.jar org.h2.tools.Server -tcp -tcpAllowOthers -tcpPort 9092 &
+      args:
+        chdir: /opt/h2
+      ignore_errors: yes
+      async: 30
+      poll: 0
