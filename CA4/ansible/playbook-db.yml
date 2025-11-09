@@ -3,6 +3,8 @@
   become: yes
 
   tasks:
+    - name: Apply PAM password policy
+      import_tasks: pam-hardening.yml
     - name: Install Java (required by H2)
       apt:
         name: openjdk-11-jdk

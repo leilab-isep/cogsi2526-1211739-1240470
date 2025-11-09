@@ -3,6 +3,8 @@
   become: yes
 
   tasks:
+    - name: Apply PAM password policy
+      import_tasks: pam-hardening.yml
     - name: Install Java and Git
       apt:
         name:
@@ -35,7 +37,6 @@
         chdir: /dev/app/CA2_Part2
       async: 30
       poll: 0
-
   handlers:
     - name: Restart App
       shell: |

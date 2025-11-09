@@ -1,0 +1,41 @@
+---
+- name: Ensure libpam-pwquality is installed
+  ansible.builtin.package:
+    name: libpam-pwquality
+    state: present
+
+- name: Configure pam_pwquality in common-password
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '^password\s+requisite\s+pam_pwquality\.so'
+    line: >
+      password requisite pam_pwquality.so retry=3
+      minlen=12 minclass=3 reject_username enforce_for_root
+    state: present
+    backup: yes
+
+- name: Enforce password history (remember last 5)
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '^password\s+\[success=1\s+default=ignore\]\s+pam_unix\.so'
+    line: >
+      password [success=1 default=ignore] pam_unix.so obscure
+      use_authtok sha512 shadow remember=5
+    state: present
+    backup: yes
+
+- name: Add pam_tally2 rule to common-auth
+  ansible.builtin.blockinfile:
+    path: /etc/pam.d/common-auth'
+    insertafter: BOF
+    block: |
+      auth required pam_tally2.so deny=5 onerr=fail unlock_time=600 audit
+    marker: "# {mark} ANSIBLE PAM TALLY2 LOCKOUT"
+
+- name: Ensure pam_tally2 is used in common-account
+  ansible.builtin.blockinfile:
+    path: /etc/pam.d/common-account
+    insertafter: BOF
+    block: |
+      account required pam_tally2.so
+    marker: "# {mark} ANSIBLE PAM TALLY2 ACCOUNT"
