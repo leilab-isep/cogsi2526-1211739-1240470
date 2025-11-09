@@ -19,10 +19,14 @@
 
     - name: Download H2 database
       get_url:
-        url: https://h2database.com/h2-2022-12-16.zip
+        url: https://github.com/h2database/h2database/releases/download/version-2.4.240/h2-2025-09-22.zip
         dest: /tmp/h2.zip
-      register: download_result
-      failed_when: download_result.status is not defined and download_result.failed is defined
+        mode: '0644'
+      register: h2_download
+      retries: 3
+      delay: 5
+      until: h2_download is succeeded
+
 
     - name: Unzip H2
       unarchive:
