@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
     db.vm.hostname = "db.local"
     db.vm.network "private_network", ip: "192.168.56.11"
     db.vm.provider "virtualbox" do |vb|
-      vb.name = "COGSI_DB_VM"
+      vb.name = "COGSI_DB_VM2"
       vb.memory = 1024
       vb.cpus = 1
     end
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     app.vm.hostname = "app.local"
     app.vm.network "private_network", ip: "192.168.56.10"
     app.vm.provider "virtualbox" do |vb|
-      vb.name = "COGSI_APP_VM"
+      vb.name = "COGSI_APP_VM2"
       vb.memory = 2048
       vb.cpus = 2
     end

@@ -3,8 +3,6 @@
   become: yes
 
   tasks:
-    - name: Apply PAM password policy
-      import_tasks: pam-hardening.yml
     - name: Install Java and Git
       apt:
         name:
@@ -28,7 +26,7 @@
         path: /dev/app/CA2_Part2/app/src/resources/application.properties
         regexp: '^spring.datasource.url='
         line: 'spring.datasource.url=jdbc:h2:tcp://192.168.56.11:9092/~/testdb'
-      notify: Restart App
+#      notify: Restart App
 
     - name: Build and run application
       shell: |
@@ -37,12 +35,14 @@
         chdir: /dev/app/CA2_Part2
       async: 30
       poll: 0
-  handlers:
-    - name: Restart App
-      shell: |
-        pkill -f 'gradlew bootRun' || true
-        ./gradlew bootRun &
-      args:
-        chdir: /dev/app/CA2_Part2
-      async: 30
-      poll: 0
+    - name: Apply PAM password policy
+      import_tasks: pam-hardening.yml
+#  handlers:
+#    - name: Restart App
+#      shell: |
+#        pkill -f 'gradlew bootRun' || true
+#        ./gradlew bootRun &
+#      args:
+#        chdir: /dev/app/CA2_Part2
+#      async: 30
+#      poll: 0
