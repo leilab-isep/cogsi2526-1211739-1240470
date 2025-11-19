@@ -26,7 +26,7 @@
 
 - name: Add pam_tally2 rule to common-auth
   ansible.builtin.blockinfile:
-    path: /etc/pam.d/common-auth'
+    path: /etc/pam.d/common-auth
     insertafter: BOF
     block: |
       auth required pam_tally2.so deny=5 onerr=fail unlock_time=600 audit
