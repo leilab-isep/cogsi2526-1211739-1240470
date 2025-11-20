@@ -1,3 +1,17 @@
+# Gradle
+.gradle
+build/
+out/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
 # Eclipse
 .settings/
 .classpath
