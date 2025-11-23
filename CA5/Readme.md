@@ -401,13 +401,13 @@ PS C:\Users\delci\Documents\ISEP\MEI\2oAno\COGSI\Projects\cogsi2526-1211739-1240
 
 ````
 
-* CONTAINER ID / NAME: The ID and name of your container (my-chat-server).
-* CPU %: The percentage of the host machine's CPU that the container is currently using. 
-* MEM USAGE / LIMIT: Shows how much memory the container is actively using versus the total amount of memory it is allowed to use from your host machine.
-* MEM %: The memory usage as a percentage of the total limit.
-* NET I/O: Network activity. It shows the total amount of data the container has received (left) and sent (right) over the network. Changes can be seen as clients connect and chat.
-* BLOCK I/O: Disk I/O activity. This shows the total amount of data the container has read from and written to the host's hard drive. 
-* PIDS: The number of processes or threads running inside the container.
+* `CONTAINER ID / NAME`: The ID and name of your container (my-chat-server).
+* `CPU %`: The percentage of the host machine's CPU that the container is currently using. 
+* `MEM USAGE / LIMIT`: Shows how much memory the container is actively using versus the total amount of memory it is allowed to use from your host machine.
+* `MEM %`: The memory usage as a percentage of the total limit.
+* `NET I/O`: Network activity. It shows the total amount of data the container has received (left) and sent (right) over the network. Changes can be seen as clients connect and chat.
+* `BLOCK I/O`: Disk I/O activity. This shows the total amount of data the container has read from and written to the host's hard drive. 
+* `PIDS`: The number of processes or threads running inside the container.
 
 
 ### Tagging and Upload to Docker Hub
@@ -433,9 +433,9 @@ docker tag ca5-multi-stage <username>/ca5-multi-stage:latest
 
 ````
 
-* docker tag: The command to create a new tag for an image.
-* chat-server: The source image to be tagged.
-* •<username>/chat-server:1.0: The new, fully-qualified tag.
+* `docker tag`: The command to create a new tag for an image.
+* `chat-server`: The source image to be tagged.
+* `<username>/chat-server:1.0`: The new, fully-qualified tag.
 
 
 With the image correctly tagged, we can push it to Docker Hub repository.
@@ -452,6 +452,150 @@ docker push <username>/ca5-multi-stage:latest
 The images are now available on Docker Hub under leilaboaze account.
 ![img_15.png](images/img_15.png)
 
+---
+
+## Part2
+
+The goal of this part is to containerize the "Building REST Services with Spring" application and its H2 database using Docker and Docker Compose.
+This creates a portable, isolated, and reproducible environment.
+
+### Project Structure
+
+We created a multi-service application defined by the following key files:
+* `db/Dockerfile`: Defines the image for our H2 database server.
+* `app/Dockerfile`: Defines the image for our Spring Boot application.
+* `docker-compose.yml`: Orchestrates the building and running of both services.
+
+###  The Database Service (db)
+
+To have a dedicated database container, we created a custom H2 image.
+
+`db/Dockerfile`:
+
+```dockerfile
+
+# Use a Java runtime as a base image
+FROM eclipse-temurin:17-jre-jammy
+
+# H2 Database version to use
+ARG H2_VERSION=2.2.224
+
+# Set working directory
+WORKDIR /opt
+
+# Download and extract the H2 database JAR
+ADD https://repo1.maven.org/maven2/com/h2database/h2/${H2_VERSION}/h2-${H2_VERSION}.jar h2.jar
+
+# Expose the default H2 TCP port (9092) and web console port (8082)
+EXPOSE 9092
+EXPOSE 8082
+
+# The directory where database files will be stored. This will be mounted as a volume.
+VOLUME ["/opt/h2-data"]
+
+CMD ["java", "-cp", "h2.jar", "org.h2.tools.Server", \
+     "-tcp", "-tcpAllowOthers", "-ifNotExists", \
+     "-web", "-webAllowOthers", \
+     "-baseDir", "/opt/h2-data"]
+
+
+```
+
+This Dockerfile creates a self-contained H2 database server, ready to accept connections.
+
+### The Web Application Service (web)
+For the Spring Boot application, we used an optimized, multi-stage Dockerfile.
+This allows us to build the application inside a Docker container without needing Java or Gradle installed on the host machine.
+
+`app/Dockerfile`:
+
+```dockerfile
+
+# Stage 1: Build the application using Gradle
+FROM gradle:jdk17 AS build
+WORKDIR /home/gradle/src
+COPY . .
+RUN gradle build --no-daemon
+
+# Stage 2: Create the final, lightweight image
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+# Correct path for a multi-project build's subproject JAR
+COPY --from=build /home/gradle/src/app/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+```
+
+We also updated application.properties to read database connection details from environment variables, making the application configurable at runtime.
+
+### Orchestration with Docker Compose
+
+The docker-compose.yml file is the centerpiece that defines and connects our services.
+
+`docker-compose.yml`:
+
+```yaml
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:tcp://db:9092/./mydb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  db:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    ports:
+      - "9092:9092"
+      - "8082:8082"
+    volumes:
+      - db-data:/opt/h2-data
+    healthcheck:
+      test: ["CMD", "java", "-cp", "h2.jar", "org.h2.tools.Shell", "-url", "jdbc:h2:tcp://localhost:9092/./mydb", "-user", "sa", "-password", "password", "-sql", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: java -cp h2.jar org.h2.tools.Server -ifNotExists -tcp -tcpAllowOthers -web -webAllowOthers -baseDir /opt/h2-data
+
+volumes:
+  db-data:
+
+```
+
+This configuration achieves several key goals:
+* `Network Connectivity`: The web service can reach the db service using the hostname db.
+* `Health Check`: The web service uses depends_on with condition: service_healthy to wait until the database is fully running before it starts, preventing connection errors.
+* `Data Persistence`: A named volume db-data is used to store the database files outside the container's lifecycle, ensuring data is not lost when the container is removed.
+* `Environment Variables`: The database URL, username, and password are all passed to the web service via the environment block, making the configuration clean and portable.
+
+### Building and Running
+
+With all files in place, the entire application stack can be built and started with a single command from the CA5/Part2 directory:
+
+```bash
+
+docker-compose up -build
+
+
+```
+
+Once running, the services are accessible:
+* `REST AP`I: http://localhost:8080
+* `H2 Database Console`: http://localhost:8082
+
+We use the same steps used on part1 to publish the image to the docker hub.
 
 
 ---

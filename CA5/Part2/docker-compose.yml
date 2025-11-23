@@ -1,0 +1,33 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:tcp://db:9092/./mydb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  db:
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    ports:
+      - "9092:9092"
+      - "8082:8082"
+    volumes:
+      - db-data:/opt/h2-data
+    healthcheck:
+      test: ["CMD", "java", "-cp", "h2.jar", "org.h2.tools.Shell", "-url", "jdbc:h2:tcp://localhost:9092/./mydb", "-user", "sa", "-password", "password", "-sql", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: java -cp h2.jar org.h2.tools.Server -ifNotExists -tcp -tcpAllowOthers -web -webAllowOthers -baseDir /opt/h2-data
+
+volumes:
+  db-data:
