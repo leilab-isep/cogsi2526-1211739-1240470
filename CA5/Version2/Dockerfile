@@ -1,6 +1,9 @@
+# syntax=docker/dockerfile:1
+FROM ubuntu:22.04
 
-# Use an official OpenJDK 17 JRE (Java Runtime Environment) image
-FROM eclipse-temurin:17-jre
+RUN apt-get update && apt-get install -y \
+    openjdk-17-jre-headless \
+    && rm -rf /var/lib/apt/lists/* \
 
 # Set the working directory inside the container
 WORKDIR /app
