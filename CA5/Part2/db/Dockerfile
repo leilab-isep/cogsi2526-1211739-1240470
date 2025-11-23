@@ -18,9 +18,6 @@ EXPOSE 8082
 VOLUME ["/opt/h2-data"]
 
 # Command to start the H2 server
-# -tcpAllowOthers: Allows connections from other containers
-# -ifNotExists: Creates the database if it doesn't exist on startup
-# -baseDir: Specifies the location for database files
 CMD ["java", "-cp", "h2.jar", "org.h2.tools.Server", \
      "-tcp", "-tcpAllowOthers", "-ifNotExists", \
      "-web", "-webAllowOthers", \
