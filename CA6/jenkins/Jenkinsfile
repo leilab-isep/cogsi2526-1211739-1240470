@@ -18,7 +18,7 @@ pipeline {
 
         stage('Assemble') {
             steps {
-                dir('CA6/app') {
+                dir('CA2') {
                     echo 'Building Gradle artifact...'
                     sh './gradlew clean assemble'
                 }
@@ -27,7 +27,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                dir('CA6/app') {
+                dir('CA2') {
                     echo 'Running unit tests...'
                     sh './gradlew test'
                 }
@@ -35,7 +35,7 @@ pipeline {
             post {
                 always {
                     // publish JUnit test results in Jenkins
-                    junit 'CA6/app/build/test-results/test/*.xml'
+                    junit 'CA2/build/test-results/test/*.xml'
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
         stage('Archive') {
             steps {
                 echo 'Archiving artifacts...'
-                archiveArtifacts artifacts: 'CA6/app/build/libs/*.jar',
+                archiveArtifacts artifacts: 'CA2/build/libs/*.jar',
                                   fingerprint: true
             }
         }
@@ -65,7 +65,7 @@ pipeline {
                 dir('CA6/ansible') {
                     sh """
                     ansible-playbook -i inventory deploy_green.yml \
-                      --extra-vars "artifact_path=${WORKSPACE}/CA6/app/build/libs"
+                      --extra-vars "artifact_path=${WORKSPACE}/CA2/build/libs"
                     """
                 }
             }
