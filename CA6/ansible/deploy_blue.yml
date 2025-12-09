@@ -1,0 +1,49 @@
+- name: Deploy app to blue VM
+  hosts: blue
+  become: yes
+
+  vars:
+    app_jar_source: "../../CA2/build/libs/*.jar"
+    app_jar_dest: "/opt/app/app.jar"
+
+  tasks:
+    - name: Ensure Java runtime is installed
+      apt:
+        name: openjdk-17-jre-headless
+        state: present
+        update_cache: yes
+
+    - name: Create app directory
+      file:
+        path: /opt/app
+        state: directory
+        mode: "0755"
+
+    - name: Copy JAR to blue
+      copy:
+        src: "{{ app_jar_source }}"
+        dest: "{{ app_jar_dest }}"
+        mode: "0755"
+
+    - name: Create systemd service for app
+      copy:
+        dest: /etc/systemd/system/app.service
+        content: |
+          [Unit]
+          Description=Building REST Services App
+          After=network.target
+
+          [Service]
+          User=root
+          ExecStart=/usr/bin/java -jar {{ app_jar_dest }}
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd and start app
+      systemd:
+        name: app.service
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

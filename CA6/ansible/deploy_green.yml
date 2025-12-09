@@ -1,0 +1,61 @@
+- name: Deploy app to green VM
+  hosts: green
+  become: yes
+
+  vars:
+    artifact_dir: "{{ artifact_path | default('../../CA2/build/libs') }}"
+    app_jar_dest: "/opt/app/app.jar"
+    health_url: "http://localhost:8080/actuator/health"
+
+  tasks:
+    - name: Ensure Java runtime is installed
+      apt:
+        name: openjdk-17-jre-headless
+        state: present
+        update_cache: yes
+
+    - name: Create app directory
+      file:
+        path: /opt/app
+        state: directory
+        mode: "0755"
+
+    - name: Copy latest JAR from workspace
+      copy:
+        src: "{{ artifact_dir }}/"
+        dest: "{{ app_jar_dest }}"
+        mode: "0755"
+        remote_src: no
+
+    - name: Create / update systemd service
+      copy:
+        dest: /etc/systemd/system/app.service
+        content: |
+          [Unit]
+          Description=Building REST Services App (GREEN)
+          After=network.target
+
+          [Service]
+          User=root
+          ExecStart=/usr/bin/java -jar {{ app_jar_dest }}
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd and restart app
+      systemd:
+        name: app.service
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+    - name: Wait for app to start
+      uri:
+        url: "{{ health_url }}"
+        status_code: 200
+        validate_certs: no
+      register: health
+      retries: 10
+      delay: 5
+      until: health.status == 200

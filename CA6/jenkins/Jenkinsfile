@@ -1,0 +1,83 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_JAR   = 'app/build/libs/*.jar'
+        INVENTORY = 'CA6/ansible/inventory'
+    }
+
+    stages {
+
+        stage('Assemble') {
+            steps {
+                dir('CA2') {
+                    echo 'Building Gradle artifact...'
+                    sh './gradlew clean assemble'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('CA2') {
+                    echo 'Running unit tests...'
+                    sh './gradlew test'
+                }
+            }
+            post {
+                always {
+                    // publish JUnit test results in Jenkins
+                    junit 'CA2/build/test-results/test/*.xml'
+                }
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                echo 'Archiving artifacts...'
+                archiveArtifacts artifacts: 'CA2/build/libs/*.jar',
+                                  fingerprint: true
+            }
+        }
+
+        stage('Deploy to Production?') {
+            steps {
+                script {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        input message: 'Deploy to GREEN (production) VM?',
+                              ok: 'Deploy'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to GREEN VM via Ansible...'
+                dir('CA6/ansible') {
+                    sh """
+                    ansible-playbook -i inventory deploy_green.yml \
+                      --extra-vars "artifact_path=${WORKSPACE}/CA2/build/libs"
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                // Tag stable builds in Jenkins UI
+                def tag = "stable-v${env.BUILD_NUMBER}"
+                currentBuild.displayName = tag
+                echo "Pipeline SUCCESS – tagged build as ${tag}"
+            }
+        }
+        failure {
+            echo "Pipeline FAILED."
+        }
+        always {
+            echo "Pipeline finished with status: ${currentBuild.currentResult}"
+        }
+    }
+}
