@@ -1,0 +1,44 @@
+- name: Roll back GREEN VM to previous stable build
+  hosts: green
+  become: yes
+
+  vars:
+    jenkins_url: "http://jenkins-host:8080"
+    job_name: "ca6-pipeline"
+    rollback_build: "{{ build_number }}"   # passed as extra-var
+    artifact_name: "building-rest-services.jar"
+    download_path: "/tmp/{{ artifact_name }}"
+    app_jar_dest: "/opt/app/app.jar"
+    health_url: "http://localhost:8080/actuator/health"
+
+  tasks:
+    - name: Download artifact from Jenkins
+      get_url:
+        url: "{{ jenkins_url }}/job/{{ job_name }}/{{ rollback_build }}/artifact/CA6/app/build/libs/{{ artifact_name }}"
+        dest: "{{ download_path }}"
+
+    - name: Stop app service
+      systemd:
+        name: app.service
+        state: stopped
+
+    - name: Replace JAR with stable version
+      copy:
+        src: "{{ download_path }}"
+        dest: "{{ app_jar_dest }}"
+        mode: "0755"
+
+    - name: Restart app service
+      systemd:
+        name: app.service
+        state: restarted
+        enabled: yes
+
+    - name: Verify rolled back version is healthy
+      uri:
+        url: "{{ health_url }}"
+        status_code: 200
+      register: health
+      retries: 10
+      delay: 5
+      until: health.status == 200

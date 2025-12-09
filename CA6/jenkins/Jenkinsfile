@@ -2,19 +2,11 @@ pipeline {
     agent any
 
     environment {
-        // path to JAR produced by Gradle
         APP_JAR   = 'app/build/libs/*.jar'
         INVENTORY = 'CA6/ansible/inventory'
     }
 
     stages {
-
-//         stage('Checkout') {
-//             steps {
-//                 echo 'Checking out development branch...'
-//                 git 'https://github.com/leilab-isep/cogsi2526-1211739-1240470.git'
-//             }
-//         }
 
         stage('Assemble') {
             steps {
